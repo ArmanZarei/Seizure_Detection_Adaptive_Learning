@@ -1,0 +1,6 @@
+notebooks
+.venv
+__pycache__
+data
+result
+main.py
