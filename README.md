@@ -17,3 +17,20 @@ Tutorial: [Link](tutorial.ipynb)
     Example:
     ![](images/dataset_usage.png)
 
+- Offline and Online train
+    - Offline train
+        - Before conducted on the patient
+    - Loss and accuracy plot
+    - Evaluation
+        - Confusion Matrix
+        - Accuracy
+        - Sensitivity
+        - Specificity
+        - F1-Score
+        - AUC
+        - ROC
+    - Adaptive learning 
+    - Accuracy and sensitivity over time plot
+
+    Example:
+    ![](images/offline_and_online_train.png)
