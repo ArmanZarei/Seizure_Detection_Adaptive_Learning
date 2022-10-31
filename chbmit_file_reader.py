@@ -11,6 +11,28 @@ import wget
 
 
 def extract_files_info_from_summary(path_to_file):
+  """
+    Extracts information from the summary of a specific patient
+
+    Parameters:
+        path_to_file (str): Path to the summary file
+
+    Returns:
+        list: List of files related to a specific patient along side some additional information
+              Example: 
+                  [
+                    {
+                      'seizure_start_times': [2670],
+                      'seizure_end_times': [2841],
+                      'file_name': 'chb08_02.edf',
+                      'start_time': 44937,
+                      'end_time': 48537,
+                      'num_of_seizures': 1
+                    },
+                    ...
+                  ]
+  """
+
   with open(path_to_file, "r") as f:
     lines = f.readlines()[29:]
 
@@ -59,6 +81,29 @@ def extract_files_info_from_summary(path_to_file):
 
 
 def download_patient_summary_and_extract_files_information(dest_dir, patient):
+  """
+    Downloads a patient's summary file and data files and extracts some information from them
+
+    Parameters:
+        dest_dir (str): The destination directory that other files would be downloaded to
+        patient (str): Name of the patient (Example: "chb08")
+    
+    Returns:
+        list: List of files related to a specific patient along side some additional information
+              Example: 
+                  [
+                    {
+                      'seizure_start_times': [2670],
+                      'seizure_end_times': [2841],
+                      'file_name': 'chb08_02.edf',
+                      'start_time': 44937,
+                      'end_time': 48537,
+                      'num_of_seizures': 1
+                    },
+                    ...
+                  ]
+  """
+
   if not os.path.isdir(dest_dir):
     Path(dest_dir).mkdir(parents=True) # Create destination directory if not exists
 
@@ -85,6 +130,19 @@ def download_patient_summary_and_extract_files_information(dest_dir, patient):
 
 
 def extract_windows_and_labels_of_patient(patient_data_dir, durations, duration_freq):
+  """
+    Extracts windows and labels from files of a patient
+
+    Parameters:
+        patient_data_dir (str): Directory of the patient's data
+        durations (list): List of files related to a specific patient along side some additional information (Extracted from above functions)
+        duration_freq (int): Frequency that is used for setting windows sizes
+    
+    Returns:
+        list: Windows extracted from patient's files
+        list: Labels extracted from patient's files
+  """
+  
   windows = []
   labels = []
 
