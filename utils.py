@@ -11,7 +11,16 @@ import os
 
 
 def time_to_seconds(t):
-  """Converts a time (string) with format of hh:mm:ss to seconds"""
+  """
+    Converts a time (string) with a format of hh:mm:ss to seconds
+
+    Parameters:
+        t (str): time with a format of hh:mm:ss
+
+    Returns:
+        int: number of seconds in t
+  """
+
   m = re.match("^(\d{1,2}):(\d{1,2}):(\d{1,2})$", t)
 
   if not m:
@@ -21,6 +30,13 @@ def time_to_seconds(t):
 
 
 def plot_seizures(durations):
+    """
+      Plots timelines including seizure events as red areas
+
+      Parameters:
+          durations (list): output of chbmit_file_reader.extract_files_info_from_summary function to be plotted
+    """
+
     fig, axs = plt.subplots(len(durations), 1, figsize=(20, len(durations)))
 
     for duration_idx, duration in enumerate(durations):
@@ -28,7 +44,6 @@ def plot_seizures(durations):
         axs[duration_idx].set_xlim(duration_idx*3600, (duration_idx+1)*3600)
         axs[duration_idx].set_yticks([])
 
-        # arr = [duration_idx*3600]
         start_arr, end_arr = [], []
         for start, end in list(zip(*[3600*duration_idx + np.array(duration[s]) for s in ['seizure_start_times', 'seizure_end_times']])):
             axs[duration_idx].fill_between((start, end), 0, 1, facecolor='red', alpha=0.2)
@@ -42,10 +57,19 @@ def plot_seizures(durations):
 
 
 def get_non_seizure_windows_adjacent_to_seizure_windows_mask(labels, expansion):
+    """
+      Outputs a mask showing non-seizure windows adjacent to seizure windows
+
+      Parameters:
+          labels (np.ndarray): Array of labels (0 or 1 indicating seizure or non-seizure events)
+          expansion (int): Maximum distance of non-seizure windows to be fetched from seizure windows (in their neighborhood)
+    """
+
     res = labels.copy()
     for exp in range(1, expansion+1):
         res = res | np.roll(labels, exp) | np.roll(labels, -exp)
     res = res & (~labels)
+
     return res.astype(bool)
 
 
@@ -56,6 +80,26 @@ def sample_from_windows(
     retain_non_seizure_windows_adjacent_to_seizure_windows_expansion=0,
     retain_non_seizure_windows_adjacent_to_seizure_windows_prob_ratio=5
   ):
+  """
+    Subsamples windows (used for (offline) training set) 
+
+    Parameters:
+        windows (list): List of windows
+        labels (list): List of labels
+        zero_to_one_ration (int): ratio indicating the number of seizure windows to non-seizure windows
+        retain_non_seizure_windows_adjacent_to_seizure_windows_expansion (int): Parameter used for controlling the action of sampling more 
+                                                                                instances from the neighborhood of seizure windows (Maximum 
+                                                                                distance of non-seizure windows to be fetched from seizure windows)
+        retain_non_seizure_windows_adjacent_to_seizure_windows_prob_ratio (int): Parameter used for controlling the action of sampling more 
+                                                                                 instances from the neighborhood of seizure windows (Probability ratio
+                                                                                 of non-seizure windows near the seizures to other non-seizure
+                                                                                 windows in the sampling process)
+
+    Returns:
+        list: Subsampled windows
+        list: Subsampled labels
+  """
+
   assert type(labels) == np.ndarray
   
   num_of_zeros, num_of_ones = [np.sum(labels == i) for i in range(2)]
@@ -83,6 +127,18 @@ def sample_from_windows(
 
 
 def extract_features_and_convert_to_tensor(windows, labels):
+  """
+    Extracts features from windows using FeatureExtraction 
+
+    Parameters:
+        windows (list): List of windows
+        labels (list): List of labels
+
+    Returns:
+        list: New windows after feature extraction phase
+        list: New labels after feature extraction phase
+  """
+
   labels = torch.from_numpy(labels).type(torch.LongTensor)
   windows = [torch.from_numpy(w) for w in windows]
 
@@ -95,6 +151,16 @@ def extract_features_and_convert_to_tensor(windows, labels):
 
 
 def plot_loss_and_accuracy(train_loss_arr, val_loss_arr, train_acc_arr, val_acc_arr):
+  """
+    Plots loss and accuracy at each epoch
+
+    Parameters:
+        train_loss_arr (list): List of training dataset loss at each epoch
+        val_loss_arr (list): List of validation dataset loss at each epoch
+        train_acc_arr (list): List of training dataset accuracy at each epoch
+        val_acc_arr (list): List of validation dataset accuracy at each epoch
+  """
+
   fig, axs = plt.subplots(1, 2, figsize=(21, 7))
 
   axs[0].set_title("Loss plot")
@@ -111,6 +177,18 @@ def plot_loss_and_accuracy(train_loss_arr, val_loss_arr, train_acc_arr, val_acc_
 
 
 def get_accuracy_and_sensitivity_over_time(model, test_dataset):
+  """
+    Calculates accuracy and sensitivity over time of a given model on a specific dataset
+
+    Parameters:
+        model (torch.nn.Module): Model
+        test_dataset (torch.utils.data.Dataset): Dataset
+    
+    Returns:
+        list: Array of accuracy over time
+        list: Array of sensitivity over time
+  """
+
   acc_arr_without_update = []
   sen_arr_without_update = []
 
@@ -134,6 +212,17 @@ def get_accuracy_and_sensitivity_over_time(model, test_dataset):
 
 
 def draw_accuracy_and_sensitivity_over_time(acc_arr_without_update, sen_arr_without_update, test_dataset, acc_arr_with_update=None, sen_arr_with_update=None):
+  """
+    Plots accuracy and sensitivity over time
+
+    Parameters:
+        acc_arr_without_update (list): Array of accuracy over time for a model that was trained just offline
+        sen_arr_without_update (list): Array of sensitivity over time for a model that was trained just offline
+        test_dataset (torch.utils.data.Dataset): Dataset
+        acc_arr_with_update (list|None): Array of accuracy over time for a model that was trained offline and online
+        sen_arr_with_update (list|None): Array of sensitivity over time for a model that was trained offline and online
+  """
+
   _, axs = plt.subplots(1, 2, figsize=(15, 5))
   for idx, (arr_without_update, arr_with_update, title) in enumerate(zip(
       [acc_arr_without_update, sen_arr_without_update], 

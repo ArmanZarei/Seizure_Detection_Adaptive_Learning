@@ -18,11 +18,11 @@ def train(model, criterion, optimizer, scheduler, train_loader, val_loader, num_
         num_epochs (): Number of training epochs 
 
     Returns:
-        train_loss_arr (list): List of training dataset loss at each epoch
-        val_loss_arr (list): List of validation dataset loss at each epoch
-        [if val_loader != None] train_acc_arr (list): List of training dataset accuracy at each epoch
-        [if val_loader != None] val_acc_arr (list): List of validation dataset accuracy at each epoch
-    """
+        list: List of training dataset loss at each epoch
+        [if val_loader != None] list: List of validation dataset loss at each epoch
+        list: List of training dataset accuracy at each epoch
+        [if val_loader != None] list: List of validation dataset accuracy at each epoch
+  """
 
   train_loss_arr, val_loss_arr = [], []
   train_acc_arr, val_acc_arr = [], []
