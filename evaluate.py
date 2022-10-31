@@ -12,10 +12,17 @@ def evaluate_model(model, data_loader, print_output=True, return_output=False):
   """
     Evaluates a model by calculating confusion matrix, sensitivity, specificity, auc and roc
 
-    model (torch.nn.Module): Model
-    data_loader (torch.utils.data.DataLoader): Dataloader of test dataset
-    print_output (bool): A boolean indicating whether the output should be printed or not
-    return_output (bool): A boolean indicating whether the output should be returned or not
+    Parameters:
+        model (torch.nn.Module): Model
+        data_loader (torch.utils.data.DataLoader): Dataloader of test dataset
+        print_output (bool): A boolean indicating whether the output should be printed or not
+        return_output (bool): A boolean indicating whether the output (sensitivity, specificity, f1_score, auc) should be returned or not
+    
+    Returns:
+        [if return_output == True] float: sensitivity
+        [if return_output == True] float: specificity
+        [if return_output == True] float: f1_score
+        [if return_output == True] float: auc
   """
 
   model.eval()
