@@ -2,6 +2,10 @@ from torch.utils.data import Dataset
 
 
 class EEGDataset(Dataset):
+  """
+    Dataset containing windows and labels of EEG signals
+  """
+  
   def __init__(self, windows, labels, transform=None):
     self.windows = windows
     self.labels = labels
