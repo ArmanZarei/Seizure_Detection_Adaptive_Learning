@@ -5,6 +5,25 @@ import torch
 
 
 def train(model, criterion, optimizer, scheduler, train_loader, val_loader, num_epochs):
+  """
+    Trains (offline) a given model for a specific training dataset
+
+    Parameters:
+        model (torch.nn.Module): The model to be trained
+        criterion (torch.nn.CrossEntropyLoss | ...): Loss function used for training
+        optimizer (torch.optim.optimizer.SGD | ...): Optimizer used for training
+        scheduler (torch.optim.lr_scheduler.StepLR | ...): Scheduler used for training
+        train_loader (torch.utils.data.DataLoader): Batches of training data 
+        val_loader (torch.utils.data.DataLoader | None): Batches of validation data (if given). 
+        num_epochs (): Number of training epochs 
+
+    Returns:
+        train_loss_arr (list): List of training dataset loss at each epoch
+        val_loss_arr (list): List of validation dataset loss at each epoch
+        [if val_loader != None] train_acc_arr (list): List of training dataset accuracy at each epoch
+        [if val_loader != None] val_acc_arr (list): List of validation dataset accuracy at each epoch
+    """
+
   train_loss_arr, val_loss_arr = [], []
   train_acc_arr, val_acc_arr = [], []
   for epoch in range(num_epochs):
