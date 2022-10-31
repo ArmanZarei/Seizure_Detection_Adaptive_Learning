@@ -24,7 +24,19 @@ def get_gamma_band(data, freq):
 
 
 class FeatureExtraction:
+  """
+    Feature extraction of EEG signals using line length and alpha/beta/gamma spectral power 
+  """
+
   def __init__(self, data, freq):
+    """
+      Constructor of FeatureExtraction class to initiate data and frequency
+
+      Parameters: 
+          data (np.ndarray): Data that is going through the pipeline of feature extraction
+          frequency (int): Frequency that is used for calculating the alpha/beta/gamma spectral power
+    """
+
     self.data = data
     self.freq = freq
   
@@ -41,6 +53,8 @@ class FeatureExtraction:
     return np.sum(np.power(get_gamma_band(self.data, self.freq), 2))
   
   def get_features(self):
+    """Calculates line length and alpha/beta/gamma spectral power of data as features"""
+    
     return [
       self.line_length(),
       self.spectral_alpha_power(),
