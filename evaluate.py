@@ -9,6 +9,15 @@ import os
 
 
 def evaluate_model(model, data_loader, print_output=True, return_output=False):
+  """
+    Evaluates a model by calculating confusion matrix, sensitivity, specificity, auc and roc
+
+    model (torch.nn.Module): Model
+    data_loader (torch.utils.data.DataLoader): Dataloader of test dataset
+    print_output (bool): A boolean indicating whether the output should be printed or not
+    return_output (bool): A boolean indicating whether the output should be returned or not
+  """
+
   model.eval()
   y_true = data_loader.dataset[:][1]
   y_pred = torch.max(model(data_loader.dataset[:][0].type(torch.FloatTensor)), axis=1)[1]
