@@ -34,29 +34,10 @@ def adaptive_learning_phase(model, dataset, optimizer, criterion, hc_s, hc_ns, c
         update_batch_y = []
       
       if len(update_batch_y) >= [hc_ns, hc_s][y]:
-         # num_of_1 = sum(update_batch_y)
-         # num_of_0 = batch_size_to_train - num_of_1
-         # if num_of_0 != num_of_1:
-         #   label_to_sample_from_train = 0 if num_of_0 < num_of_1 else 1
-         #   num_of_samples = abs(num_of_1 - num_of_0)
-
-         #   indices = torch.where(train_dataset[:][1] == label_to_sample_from_train)[0]
-         #   assert num_of_samples <= indices.shape[0]
-
-         #   random_indices = indices[torch.randperm(indices.shape[0])[:num_of_samples]]
-         #   for sample_idx in random_indices:
-         #     sample_x, sample_y = train_dataset[sample_idx]
-         #     update_batch_x.append(sample_x)
-         #     update_batch_y.append(sample_y)
-
-
          x_train = update_batch_x[-1].unsqueeze(0)
          y_train = update_batch_y[-1].unsqueeze(0)
-         # x_train = torch.stack(update_batch_x, dim=0)
-         # y_train = torch.stack(update_batch_y, dim=0)
 
-         # # model.train()
-
+         # model.train()
          optimizer.zero_grad()
          outputs = model(x_train.type(torch.FloatTensor))
          loss = criterion(outputs, y_train)
@@ -64,10 +45,6 @@ def adaptive_learning_phase(model, dataset, optimizer, criterion, hc_s, hc_ns, c
          optimizer.step()
 
          cnt_update[y] += 1
-
-         # update_batch_x = []
-         # update_batch_y = []
-
       
       cnt_total += 1
       if pred == y:
