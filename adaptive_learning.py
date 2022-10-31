@@ -4,6 +4,27 @@ from tqdm import tqdm
 
 
 def adaptive_learning_phase(model, dataset, optimizer, criterion, hc_s, hc_ns, ct_s, ct_ns, use_tqdm=True):
+   """
+      Adaptive learning - Updates the model while seeing new test data based on some parameters (hc_s,  hc_ns, ...)
+      
+      For seizure windows:
+         After the model outputs hc_s predictions of seizure events with probability more than ct_s,
+      For non-seizure windows:
+         After the model outputs hc_ns predictions of non-seizure events with probability more than ct_ns,
+      the model updates its parameters using new high confident samples.
+
+      Parameters:
+         model (torch.nn.Module): A model that has been trained offline on training dataset
+         dataset (torch.utils.data.Dataset): Test dataset
+         optimizer (torch.optim.optimizer.SGD | ...): Optimizer used for adaptive learning
+         criterion (torch.nn.CrossEntropyLoss | ...): Loss function used for adaptive learning
+         hc_s (int): Number of high confident predictions for seizure events that triggers parameter update
+         hc_ns (int): Number of high confident predictions for non-seizure events that triggers parameter update
+         ct_s (int): Confidence threshold of predictions for seizure events 
+         ct_ns (int): Confidence threshold of predictions for non-seizure events 
+         use_tqdm (bool): Whether the tqdm bar should be shown or not
+   """
+
    cnt_update = [0, 0]
 
    acc_arr = []
