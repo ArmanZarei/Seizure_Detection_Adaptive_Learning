@@ -236,3 +236,25 @@ def draw_accuracy_and_sensitivity_over_time(acc_arr_without_update, sen_arr_with
     axs[idx].fill_between(range(0, test_dataset.labels.shape[0]), 0, 1, where=test_dataset.labels, facecolor='red', alpha=0.1)
     axs[idx].set_ylim(0, 1.005);
     axs[idx].set_title(f"{title} over time")
+
+
+def get_raw_predictions(model, dataset):
+  """
+    Calculates raw predictions of a model for a given dataset
+
+    Parameters:
+        model (torch.nn.Module): Model
+        test_dataset (torch.utils.data.Dataset): Dataset
+    
+    Returns:
+        list: Tensor of raw predictions with a shape of (len(dataset), 2)
+  """
+
+  raw_predictions = []
+
+  model.eval()
+  for x, y in tqdm(dataset):
+    output = model(x.view(1, -1).type(torch.FloatTensor)).detach().squeeze()
+    raw_predictions.append(output)
+    
+  return torch.stack(raw_predictions)
