@@ -23,6 +23,12 @@ def adaptive_learning_phase(model, dataset, optimizer, criterion, hc_s, hc_ns, c
          ct_s (int): Confidence threshold of predictions for seizure events 
          ct_ns (int): Confidence threshold of predictions for non-seizure events 
          use_tqdm (bool): Whether the tqdm bar should be shown or not
+      
+      Returns: 
+         List: List of accuracy over time
+         List: List of sensitivity over time
+         float: Total loss 
+         List: List of raw predictions
    """
 
    cnt_update = [0, 0]
@@ -30,6 +36,8 @@ def adaptive_learning_phase(model, dataset, optimizer, criterion, hc_s, hc_ns, c
    acc_arr = []
    sen_arr = []
    total_loss = 0
+   
+   raw_predictions = []
 
    update_batch_x, update_batch_y = [], []
    
@@ -38,6 +46,7 @@ def adaptive_learning_phase(model, dataset, optimizer, criterion, hc_s, hc_ns, c
    cnt_correct_seizure = 0
    for x, y in tqdm(dataset, disable=not use_tqdm):
       outputs = model(x.view(1, -1).type(torch.FloatTensor)).detach()
+      raw_predictions.append(outputs.squeeze())
       pred = torch.max(outputs, axis=1)[1].item()
       softmax_output = F.softmax(outputs, dim=1)
 
@@ -80,4 +89,4 @@ def adaptive_learning_phase(model, dataset, optimizer, criterion, hc_s, hc_ns, c
 
    print("Count of update:", cnt_update)
    
-   return acc_arr, sen_arr, total_loss
+   return acc_arr, sen_arr, total_loss, torch.stack(raw_predictions)
