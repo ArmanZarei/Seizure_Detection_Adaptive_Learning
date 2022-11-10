@@ -35,9 +35,10 @@ Tutorial: [Link](tutorial.ipynb)
     Example:
     ![](images/offline_and_online_train.png)
 
-## Result and comparison with SOUL paper
+## Results and comparison with SOUL paper
 
 ### Setup
+- Dataset: CHB-MIT Scalp EEG Database
 - Patient number: `8`
 - Dataset Partitioning
     - Train: `26%`
